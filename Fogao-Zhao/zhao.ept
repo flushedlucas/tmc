@@ -1,0 +1,43 @@
+
+node ovendef (finish, start, cold, temp_ok, c: bool) returns (name, power: int)
+let
+	automaton
+
+		state Off do
+			name = 0;
+			power = 0;
+		unless start & not c then Standby
+			| start & c then Heat
+
+		state Standby do
+			name = 1;
+			power = 0;
+		unless c then Heat
+
+		state Heat do
+			name = 2;
+			power = 1500;
+		unless finish then Off
+			| temp_ok then Maintain
+
+		state Maintain do
+			name = 3;
+			power = 300;
+		unless cold & c then Reheat
+			| finish then Off
+
+		state Reheat do
+			name = 4;
+			power = 1000;
+		unless finish then Off
+			| temp_ok then Maintain
+	end
+tel
+
+node oven(finish1, start1, cold1, temp_ok1, c1: bool) returns (name1, power1: int)
+
+	
+
+let
+	(name1, power1) = inlined ovendef(finish1, start1, cold1, temp_ok1, c1)
+tel
