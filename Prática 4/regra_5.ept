@@ -1,0 +1,116 @@
+
+node ovendef (finish, start, cold, temp_ok, c: bool) returns (nameOven, powerOven: int)
+let
+	automaton
+
+		state Off do
+			nameOven = 0;
+			powerOven = 0;
+		unless start & not c then Standby
+			| start & c then Heat
+
+		state Standby do
+			nameOven = 1;
+			powerOven = 0;
+		unless c then Heat
+
+		state Heat do
+			nameOven = 2;
+			powerOven = 1500;
+		unless finish then Off
+			| temp_ok then Maintain
+
+		state Maintain do
+			nameOven = 3;
+			powerOven = 300;
+		unless cold & c then Reheat
+			| finish then Off
+
+		state Reheat do
+			nameOven = 4;
+			powerOven = 1000;
+		unless finish then Off
+			| temp_ok then Maintain
+	end
+tel
+
+node raddef(up1, down1, up2, down2, c1, c2: bool) returns (nameRad, powerRad: int)
+let
+	automaton
+		state Off do
+			nameRad = 0;
+			powerRad = 0;
+		unless up1 or not c1 then Frost
+
+		state Frost do
+			nameRad = 1;
+			powerRad = 300;
+		unless down1 or not c1 then Off
+			| up1 & c1 then Eco
+			| up2 & c2 then High
+
+		state Eco do
+			nameRad = 2;
+			powerRad = 1500;
+		unless down1 or not c1 then Frost
+			| up2 & c2 then High
+
+		state High do
+			nameRad = 3;
+			powerRad = 2000;
+		unless down1 or not c1 then Eco
+			| down2 or not c2 then Frost
+	end
+tel
+
+
+node washingmachinedef(end_wash, start, c: bool) returns (nameWash, powerWash: int)
+let
+	automaton
+		state Off do
+			nameWash = 0;
+			powerWash = 0;
+		unless start then Waterfill
+
+		state Waterfill do
+			nameWash = 1;
+			powerWash = 15;
+		unless end_wash & c then Washing
+			| end_wash & not c then Standby
+
+		state Standby do
+			nameWash = 2;
+			powerWash = 0;
+		unless c then Washing
+
+		state Washing do
+			nameWash = 3;
+			powerWash = 250;
+		unless end_wash then Rinse
+
+		state Rinse do
+			nameWash = 4;
+			powerWash = 200;
+		unless end_wash then Spin
+
+		state Spin do
+			nameWash = 5;
+			powerWash = 800;
+		unless end_wash then Off
+	end
+tel
+
+node coreSystem(finish, start, cold, temp_ok, c_oven, up1, down1, up2, down2, c1, c2, end_wash, startWash, c_wash: bool) returns (nameOven, powerOven, nameRad, powerRad, nameWash, powerWash: int)
+let
+	(nameOven, powerOven) = inlined ovendef(finish, start, cold, temp_ok, c_oven);
+    (nameRad, powerRad) = inlined raddef(up1, down1, up2, down2, c1, c2);
+    (nameWash, powerWash) = inlined washingmachinedef(end_wash, startWash, c_wash)
+tel
+
+node controller(ptotal: int; finish, start, cold, temp_ok, up1, down1, up2, down2, end_wash, startWash: bool) returns (nameOven, powerOven, nameRad, powerRad, nameWash, powerWash: int)
+    contract
+    	enforce ptotal >= powerRad + powerWash + powerOven
+ 			with (c1, c2, c_wash, c_oven: bool)
+let
+    (nameOven, powerOven, nameRad, powerRad, nameWash, powerWash) = inlined coreSystem (finish, start, cold, temp_ok, c_oven, up1, down1, up2, down2, c1, c2, end_wash, startWash, c_wash)
+tel
