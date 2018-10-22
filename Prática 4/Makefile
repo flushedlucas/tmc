@@ -1,9 +1,9 @@
 
-SIM_PROG=regra_5
+SIM_PROG=regra5
 # same as SIM_PROG, capitalized
-SIM_MOD=Regra_5
-SIM_NODE=controller
-CONTRACT_NODE=controller
+SIM_MOD=Coresystem
+SIM_NODE=coresystem
+CONTRACT_NODE=coresystem
 
 # This generic Makefile does not allow contract and simulated node in
 # two different modules (can be two different nodes, though)
@@ -41,7 +41,7 @@ CTRLR_OBJS = $(CTRLR_C_FILES:.c=.o)
 all: sim
 
 sim: $(SIM_NODE)_sim $(SIM_PROG).epci
-#	$(HEPTS) -mod $(SIM_MOD) -node $(SIM_NODE) -exec ./$(SIM_NODE)_sim
+	$(HEPTS) -mod $(SIM_MOD) -node $(SIM_NODE) -exec ./$(SIM_NODE)_sim
 
 $(SIM_NODE)_sim: $(SIM_PROG)_c/_main.o $(HEPT_OBJS) $(CTRLR_OBJS)
 	$(CC) $(LDFLAGS) -o $(SIM_NODE)_sim $^
@@ -57,10 +57,10 @@ $(CONTRACT_PROG)_c/_main.c: $(CONTRACT_PROG)_z3z/$(CONTRACT_NODE).z3z
 	$(HEPTC) $<
 
 $(CTRLR_PROG).ept: $(CONTRACT_PROG)_z3z/$(CONTRACT_NODE).z3z
-#	$(SIGALI) < $(CONTRACT_PROG)_z3z/$(CONTRACT_NODE).z3z > /dev/null
+	$(SIGALI) < $(CONTRACT_PROG)_z3z/$(CONTRACT_NODE).z3z > /dev/null
 
 $(CTRLR_PROG).epci $(CTRLR_PROG)_c/$(CTRLR_PROG).c: $(CTRLR_PROG).ept
-#	$(HEPTC) -target c $(CTRLR_PROG).ept
+	$(HEPTC) -target c $(CTRLR_PROG).ept
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
