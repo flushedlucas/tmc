@@ -1,4 +1,3 @@
-
 node oven (finish, start, cold, temp_ok, c_oven: bool) returns (nameOven, powerOven: int)
 let
 	automaton
@@ -100,54 +99,6 @@ let
 	end
 tel
 
-node lighter(userLamp, cont1, cont2: bool) returns (sLamp:bool)
-let
-    automaton
-     state OFF do
-        sLamp = false; 
-     unless (userLamp & cont1) or not cont2 then ON
-     state ON do
-        sLamp = true;
-     unless (userLamp & cont2) or not cont1 then OFF
-    end 
-tel
-
-node door(push_d,c_door:bool) returns (door_open:bool)
-let
-    automaton
-        state Closed do
-            door_open = false;
-        unless push_d & c_door then Open
-        state Open do
-            door_open = true;
-        unless push_d or not c_door then Closed
-    end
-tel
-
-node window(push_w,c_window:bool) returns (window_open:bool)
-let
-    automaton
-        state Closed do
-            window_open = false;
-        unless push_w & c_window then Open
-        state Open do
-            window_open = true;
-        unless push_w or not c_window then Closed
-    end
-tel
-
-node room(presence:bool) returns (room_oc:bool)
-let
-    automaton
-        state Empty do
-            room_oc = false;
-        unless presence then Occupied
-        state Occupied do
-            room_oc = true;
-        unless not presence then Empty
-    end
-tel
-
 type spl = S1 | S2 | S3
 
 node police(eco, confort: bool) returns (pl: int; s: spl)
@@ -173,32 +124,23 @@ let
 	end
 tel
 
-node coresystem(eco, confort, finish, start, cold, temp_ok, up1, down1, up2, down2, end_wash, startWash, push_d, push_w, presence, userLamp, userTV: bool) returns (pl, nameOven, powerOven, nameRad, powerRad, nameWash, powerWash: int; door_open, window_open, room_oc, lamp_on, tv_on: bool; s: spl;)
+node coresystem(eco, confort, finish, start, cold, temp_ok, up1, down1, up2, down2, end_wash, startWash: bool) returns (pl, nameOven, powerOven, nameRad, powerRad, nameWash, powerWash: int; s: spl;)
     contract
     	var 
-    		rule1, rule2, rule3, rule4, regra5: bool;
+    		regra5: bool;
 		total: int;
     	let
-		rule1 = not room_oc or (lamp_on or tv_on);
-		rule2 = room_oc or not (window_open or door_open);
-		rule3 = not (window_open or door_open) or (nameRad = 0 or nameRad = 1);
-		rule4 = room_oc or (not(lamp_on or tv_on) & (powerRad = 0 or powerRad = 300));
 		total = powerOven + powerRad + powerWash;
 		switch s | S1 do regra5 = (total <= 3000)
 					| S2 do regra5 = (total <= 5000)
 					| S3 do regra5 = (total <= 7000);
 		end 
     	tel
-    	enforce rule1 & rule2 & rule3 & rule4 & regra5
- 			with (c_door, c_window, c1, c2, c_wash, c_oven, contLamp1, contLamp2, contTV1, contTV2: bool)
+    	enforce regra5
+ 			with (c1, c2, c_wash, c_oven: bool)
 let
 	(pl, s) = inlined police(eco, confort);
-	(nameOven, powerOven) = inlined oven(finish, start, cold, temp_ok, c_oven);
-	(nameRad, powerRad) = inlined rad(up1, down1, up2, down2, c1, c2);
-	(nameWash, powerWash) = inlined washingmachine(end_wash, startWash, c_wash);
-	door_open = inlined door(push_d,c_door);
-	window_open = inlined window(push_w,c_window);
-	room_oc = inlined room(presence);
-	lamp_on = inlined lighter(userLamp, contLamp1, contLamp2);
-	tv_on = inlined lighter(userTV, contTV1, contTV2);
+    (nameOven, powerOven) = inlined oven(finish, start, cold, temp_ok, c_oven);
+    (nameRad, powerRad) = inlined rad(up1, down1, up2, down2, c1, c2);
+    (nameWash, powerWash) = inlined washingmachine(end_wash, startWash, c_wash)
 tel
