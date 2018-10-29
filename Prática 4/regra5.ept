@@ -100,19 +100,48 @@ let
 	end
 tel
 
-node coresystem(finish, start, cold, temp_ok, up1, down1, up2, down2, end_wash, startWash: bool) returns (nameOven, powerOven, nameRad, powerRad, nameWash, powerWash: int)
+type spl = S1 | S2 | S3
+
+node police(eco, confort: bool) returns (pl: int; s: spl)
+let
+	automaton
+		state MS do
+			pl = 3000;
+			s = S1;
+		unless eco then Eco
+			| confort then Confort
+
+		state Eco do
+			pl = 5000;
+			s = S2;
+		unless not eco then MS
+			| confort then Confort
+
+		state Confort do
+			pl = 7000;
+			s = S3;
+		unless not confort then MS
+			| eco then Eco
+	end
+tel
+
+node coresystem(eco, confort, finish, start, cold, temp_ok, up1, down1, up2, down2, end_wash, startWash: bool) returns (pl, nameOven, powerOven, nameRad, powerRad, nameWash, powerWash: int; s: spl;)
     contract
     	var 
     		regra5: bool;
-    		total: int;
+		total: int;
     	let
-    		total = powerOven + powerRad + powerWash;
-    		regra5 = (5000 >= total)
+		total = powerOven + powerRad + powerWash;
+		switch s | S1 do regra5 = (total <= 3000)
+					| S2 do regra5 = (total <= 5000)
+					| S3 do regra5 = (total <= 7000);
+		end 
     	tel
     	enforce regra5
  			with (c1, c2, c_wash, c_oven: bool)
 let
+	(pl, s) = inlined police(eco, confort);
     (nameOven, powerOven) = inlined oven(finish, start, cold, temp_ok, c_oven);
     (nameRad, powerRad) = inlined rad(up1, down1, up2, down2, c1, c2);
-    (nameWash, powerWash) = inlined washingmachine(end_wash, startWash, c_wash);
+    (nameWash, powerWash) = inlined washingmachine(end_wash, startWash, c_wash)
 tel
