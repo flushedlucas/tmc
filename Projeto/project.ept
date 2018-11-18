@@ -1,0 +1,11 @@
+
+node pneumatic() returns ()
+let 
+	automaton
+		state Back do 
+
+
+		state Foward do
+		
+	end
+tel
