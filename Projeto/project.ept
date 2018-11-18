@@ -1,4 +1,13 @@
+node sign () returns ()
+let
+	automaton
+		state On do
+			sgnal = 1
 
+		state Off do
+			signal = 0
+	end
+tel
 node pneumatic() returns ()
 let 
 	automaton
@@ -6,6 +15,7 @@ let
 
 
 		state Foward do
-		
+
 	end
 tel
+
