@@ -1,21 +1,103 @@
-node sign () returns ()
+node sign (input: bool) returns (output: bool)
 let
 	automaton
 		state On do
-			sgnal = 1
+			out = true
+		unless input then Off
 
 		state Off do
-			signal = 0
+			out = false
+		unless input then On
 	end
 tel
-node pneumatic() returns ()
+
+node matting (start, end: bool) returns (active: bool)
+let
+	automaton
+		state Stop do
+			active = false
+		unless start then Moving
+
+		state Moving do
+			active = true
+		unless end then Stop
+	end
+tel
+
+node pneumatic(buffer, p1: bool) returns (active: bool)
 let 
 	automaton
 		state Back do 
+			active = false
+		unless buffer & not p1 then Foward
 
 
 		state Foward do
+			active = true
+		unless p1 then Back
 
 	end
 tel
 
+node bomb (p2, b_full: bool) returns (active: bool)
+let
+	automaton
+		state Stop do
+			active = false
+		unless start then Fill
+
+		state Fill do
+			active = true
+		unless b_full then Stop
+	end
+tel
+
+node capper (buffer, p3, b_capped: bool) returns (active: bool)
+let
+	automaton
+		state Stop do
+			active = false
+		unless start then Action
+
+		state Action do
+			active = true
+		unless b_capped then Stop
+	end
+tel
+
+node robot (p4, out_buffer: bool) retuns (active: bool)
+let
+	automaton
+		state P4 do
+			active = false
+		unless start then Out
+
+		state Out do
+			active = true
+		unless out_buffer then P4
+	end
+tel
+
+node coreSystem (buffer, p1, p2, b_full, capper_buffer, p3, b_capped, p4, out_buffer: bool) returns (a_matting, a_pneumatic, a_bomb, a_capper, a_robot)
+	contract
+		var rule1, rule2, rule3, rule4, rule5, rule6: bool;
+
+		let
+			rule1 = a_matting & not(a_pneumatic or a_bomb or a_capper or a_robot);
+			rule2 = a_pneumatic & not p1;
+			rule3 = a_matting & (p1 or p2 or p3 or p4);
+			rule4 = (a_bomb & p2) & (a_capper & p3) & (a_robot & p4);
+			rule5 = (a_capper & not b_capped) & (a_bomb & not b_full);
+			rule6 = (not a_matting) & (p1 or p2 or p3 or p4);
+		tel
+
+		enforce rule1 & rule2 & rule3 & rule4 & rule5 & rule6
+			with ();
+
+let
+	(a_matting) = inlined matting(start, end);
+	(a_pneumatic) = inlined pneumatic(buffer, p1);
+	(a_bomb) = inlined bomb(p2, b_full);
+	(a_capper) = inlined capper(capper_buffer, p3, b_capped);
+	(a_robot) = inlined robot(p4, out_buffer);
+tel
