@@ -1,90 +1,91 @@
 node sign (input: bool) returns (output: bool)
 let
 	automaton
-		state On do
-			out = true
-		unless input then Off
-
 		state Off do
-			out = false
+			output = false;
 		unless input then On
+
+		state On do
+			output = true;
+		unless input then Off
 	end
 tel
 
-node matting (start, end: bool) returns (active: bool)
+node matting (start, finish, c_matting: bool) returns (active: bool)
 let
 	automaton
 		state Stop do
-			active = false
-		unless start then Moving
+			active = false;
+		unless start & c_matting then Moving
 
 		state Moving do
-			active = true
-		unless end then Stop
+			active = true;
+		unless finish then Stop
 	end
 tel
 
-node pneumatic(buffer, p1: bool) returns (active: bool)
+node pneumatic(buffer, c1_pneumatic, c2_pneumatic: bool) returns (active: bool)
 let 
 	automaton
 		state Back do 
-			active = false
-		unless buffer & not p1 then Foward
+			active = false;
+		unless buffer & c1_pneumatic then Foward
 
 
 		state Foward do
-			active = true
-		unless p1 then Back
+			active = true;
+		unless c2_pneumatic then Back
 
 	end
 tel
 
-node bomb (p2, b_full: bool) returns (active: bool)
+node bomb (p2, b_full, c_bomb: bool) returns (active: bool)
 let
 	automaton
 		state Stop do
-			active = false
-		unless start then Fill
+			active = false;
+		unless p2 & not b_full & c_bomb then Fill
 
 		state Fill do
-			active = true
+			active = true;
 		unless b_full then Stop
 	end
 tel
 
-node capper (buffer, p3, b_capped: bool) returns (active: bool)
+node capper (buffer, p3, b_capped, c_capper: bool) returns (active: bool)
 let
 	automaton
 		state Stop do
-			active = false
-		unless start then Action
+			active = false;
+		unless buffer & p3 & not b_capped & c_capper then Action
 
 		state Action do
-			active = true
+			active = true;
 		unless b_capped then Stop
 	end
 tel
 
-node robot (p4, out_buffer: bool) retuns (active: bool)
+node robot (p4, out_buffer, c_robot: bool) returns (active: bool)
 let
 	automaton
 		state P4 do
-			active = false
-		unless start then Out
+			active = false;
+		unless p4 & c_robot then Out
 
 		state Out do
-			active = true
+			active = true;
 		unless out_buffer then P4
 	end
 tel
 
-node coreSystem (buffer, p1, p2, b_full, capper_buffer, p3, b_capped, p4, out_buffer: bool) returns (a_matting, a_pneumatic, a_bomb, a_capper, a_robot)
+node coresystem (p1_input, p2_input, p3_input, p4_input, buffer, b_full, capper_buffer,b_capped, out_buffer, start, finish: bool) returns (p1, p2, p3, p4, a_matting, a_pneumatic, a_bomb, a_capper, a_robot: bool)
 	contract
-		var rule1, rule2, rule3, rule4, rule5, rule6: bool;
+		var 
+			rule1, rule2, rule3, rule4, rule5, rule6: bool;
 
 		let
 			rule1 = a_matting & not(a_pneumatic or a_bomb or a_capper or a_robot);
-			rule2 = a_pneumatic & not p1;
+			rule2 = a_pneumatic & not p1; (*Verificar a necessidade dessa regra, conforme linha 32*)
 			rule3 = a_matting & (p1 or p2 or p3 or p4);
 			rule4 = (a_bomb & p2) & (a_capper & p3) & (a_robot & p4);
 			rule5 = (a_capper & not b_capped) & (a_bomb & not b_full);
@@ -92,12 +93,16 @@ node coreSystem (buffer, p1, p2, b_full, capper_buffer, p3, b_capped, p4, out_bu
 		tel
 
 		enforce rule1 & rule2 & rule3 & rule4 & rule5 & rule6
-			with ();
+			with (c1_pneumatic, c2_pneumatic, c_bomb, c_capper, c_robot, c_matting: bool)
 
 let
-	(a_matting) = inlined matting(start, end);
-	(a_pneumatic) = inlined pneumatic(buffer, p1);
-	(a_bomb) = inlined bomb(p2, b_full);
-	(a_capper) = inlined capper(capper_buffer, p3, b_capped);
-	(a_robot) = inlined robot(p4, out_buffer);
+	p1 = inlined sign(p1_input);
+	p2 = inlined sign(p2_input);
+	p3 = inlined sign(p3_input);
+	p4 = inlined sign(p4_input);
+	a_matting = inlined matting(start, finish, c_matting);
+	a_pneumatic = inlined pneumatic(buffer, c1_pneumatic, c2_pneumatic);
+	a_bomb = inlined bomb(p2, b_full, c_bomb);
+	a_capper = inlined capper(capper_buffer, p3, b_capped, c_capper);
+	a_robot = inlined robot(p4, out_buffer, c_robot);
 tel
