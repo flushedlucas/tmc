@@ -41,7 +41,7 @@ CTRLR_OBJS = $(CTRLR_C_FILES:.c=.o)
 all: sim
 
 sim: $(SIM_NODE)_sim $(SIM_PROG).epci
-#	$(HEPTS) -mod $(SIM_MOD) -node $(SIM_NODE) -exec ./$(SIM_NODE)_sim
+	# $(HEPTS) -mod $(SIM_MOD) -node $(SIM_NODE) -exec ./$(SIM_NODE)_sim
 
 $(SIM_NODE)_sim: $(SIM_PROG)_c/_main.o $(HEPT_OBJS) $(CTRLR_OBJS)
 	$(CC) $(LDFLAGS) -o $(SIM_NODE)_sim $^
