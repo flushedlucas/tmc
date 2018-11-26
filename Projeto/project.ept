@@ -11,7 +11,7 @@ let
 	end
 tel
 
-node matting (start, finish, c1_matting: bool) returns (active: bool)
+node matting (start, finish, c1_matting, c2_matting: bool) returns (active: bool)
 let
 	automaton
 		state Stop do
@@ -20,7 +20,7 @@ let
 
 		state Moving do
 			active = true;
-		unless finish then Stop
+		unless finish or c2_matting then Stop
 	end
 tel
 
@@ -78,25 +78,25 @@ let
 	end
 tel
 
-node coresystem(p1_input, p2_input, p3_input, p4_input, start, finish, buffer, b_full, capper_buffer,b_capped, out_buffer: bool) returns (p1, p2, p3, p4, a_matting, a_pneumatic, a_bomb, a_capper, a_robot: bool)
+node coresystem(p1_input, p2_input, p3_input, p4_input, start, finish , buffer, b_full, capper_buffer,b_capped, out_buffer : bool) returns (p1, p2, p3, p4, a_matting , a_pneumatic, a_bomb, a_capper, a_robot: bool)
 contract
 		var 
 			rule1, rule6: bool;
 
 		let
-			rule1 = a_matting & not (a_pneumatic or a_bomb or a_capper or a_robot);
-			rule6 = (a_matting) & (not p1 & not p2 & not p3 & not p4);
+			rule1 = not (a_matting & (a_pneumatic or a_bomb or a_capper or a_robot));
+			rule6 = not ((a_matting) & not (p1 or p2 or p3 or p4));
 		tel
 
-		enforce rule6
-			with (c1_matting, c1_pneumatic, c2_pneumatic, c_bomb, c_capper, c_robot: bool)
+		enforce rule1 & rule6
+			with (c1_matting, c2_matting , c1_pneumatic, c2_pneumatic, c_bomb, c_capper, c_robot : bool)
 
 let
 	p1 = inlined sign(p1_input);
 	p2 = inlined sign(p2_input);
 	p3 = inlined sign(p3_input);
 	p4 = inlined sign(p4_input);
-	a_matting = inlined matting(start, finish, c1_matting);
+	a_matting = inlined matting(start, finish, c1_matting, c2_matting);
 	a_pneumatic = inlined pneumatic(buffer, p1, c1_pneumatic, c2_pneumatic);
 	a_bomb = inlined bomb(p2, b_full, c_bomb);
 	a_capper = inlined capper(capper_buffer, p3, b_capped, c_capper);
