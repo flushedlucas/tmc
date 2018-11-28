@@ -24,44 +24,44 @@ let
 	end
 tel
 
-node pneumatic(buffer, p1, c1_pneumatic, c2_pneumatic: bool) returns (active: bool)
+node pneumatic(buffer, c1_pneumatic, c2_pneumatic: bool) returns (active: bool)
 let 
 	automaton
 		state Back do 
 			active = false;
-		unless buffer & not p1 & c1_pneumatic then Foward
+		unless buffer & c1_pneumatic then Foward
 
 
 		state Foward do
 			active = true;
-		unless c2_pneumatic or p1 then Back
+		unless c2_pneumatic then Back
 
 	end
 tel
 
-node bomb (p2, b_full, c_bomb: bool) returns (active: bool)
+node bomb (p2, b_full, c1_bomb, c2_bomb: bool) returns (active: bool)
 let
 	automaton
 		state Stop do
 			active = false;
-		unless p2 & not b_full & c_bomb then Fill
+		unless p2 & c1_bomb then Fill
 
 		state Fill do
 			active = true;
-		unless b_full then Stop
+		unless b_full or c2_bomb then Stop
 	end
 tel
 
-node capper (buffer, p3, b_capped, c_capper: bool) returns (active: bool)
+node capper (buffer, b_capped, c1_capper, c2_capper: bool) returns (active: bool)
 let
 	automaton
 		state Stop do
 			active = false;
-		unless buffer & p3 & not b_capped & c_capper then Action
+		unless buffer & not b_capped & c1_capper then Action
 
 		state Action do
 			active = true;
-		unless b_capped then Stop
+		unless c2_capper then Stop
 	end
 tel
 
@@ -81,24 +81,29 @@ tel
 node coresystem(p1_input, p2_input, p3_input, p4_input, start, finish , buffer, b_full, capper_buffer,b_capped, out_buffer : bool) returns (p1, p2, p3, p4, a_matting , a_pneumatic, a_bomb, a_capper, a_robot: bool)
 contract
 		var 
-			rule1, rule6: bool;
+			rule1, rule2, rule3, rule4, rule5, rule6: bool;
 
 		let
 			rule1 = not (a_matting & (a_pneumatic or a_bomb or a_capper or a_robot));
+			rule2 = not (a_pneumatic & p1);
+			(* rule3 = not (a_matting & ((p2 & not b_full) or (p3 & not b_capped) or (p4 & not out_buffer))); *)
+			rule3 = not ((a_bomb or a_capper or a_robot) & a_matting);
+			rule4 = not (a_bomb & not p2) & not (a_capper & not p3) & not (a_robot & not p4);
+			rule5 = not (a_bomb & b_full) & not(a_capper & b_capped);
 			rule6 = not ((a_matting) & not (p1 or p2 or p3 or p4));
 		tel
 
-		enforce rule1 & rule6
-			with (c1_matting, c2_matting , c1_pneumatic, c2_pneumatic, c_bomb, c_capper, c_robot : bool)
+		enforce rule1 & rule2 & rule3 & rule4 & rule5 & rule6
+			with (c1_bomb, c2_bomb, c1_matting, c2_matting , c1_pneumatic, c2_pneumatic, c1_capper, c2_capper, c_robot: bool)
 
 let
 	p1 = inlined sign(p1_input);
 	p2 = inlined sign(p2_input);
 	p3 = inlined sign(p3_input);
 	p4 = inlined sign(p4_input);
+	a_bomb = inlined bomb(p2, b_full, c1_bomb, c2_bomb);
 	a_matting = inlined matting(start, finish, c1_matting, c2_matting);
-	a_pneumatic = inlined pneumatic(buffer, p1, c1_pneumatic, c2_pneumatic);
-	a_bomb = inlined bomb(p2, b_full, c_bomb);
-	a_capper = inlined capper(capper_buffer, p3, b_capped, c_capper);
+	a_pneumatic = inlined pneumatic(buffer, c1_pneumatic, c2_pneumatic);
+	a_capper = inlined capper(capper_buffer, b_capped, c1_capper, c2_capper);
 	a_robot = inlined robot(p4, out_buffer, c_robot);
 tel
