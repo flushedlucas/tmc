@@ -1,21 +1,27 @@
-
 SIM_PROG=project
 # same as SIM_PROG, capitalized
 SIM_MOD=Coresystem
 SIM_NODE=coresystem
 CONTRACT_NODE=coresystem
+SIM_WEB=webservices
 
 # This generic Makefile does not allow contract and simulated node in
 # two different modules (can be two different nodes, though)
 CONTRACT_PROG=$(SIM_PROG)
 CONTRACT_MOD=$(SIM_MOD)
 
+DIR = $(shell pwd)
+
 CC=gcc
 HEPTC=heptc
 HEPTS=hepts
 SIGALI=/home/osboxes/tmc/Sigali-2.4/bin/sigali
+PROG = $(DIR)/prog.py
 
 HEPT_LIB_C=/usr/local/lib/heptagon/c
+MICRO_HTTP_LIB = /usr/lib/x86_64-linux-gnu/libmicrohttpd.so
+MAIN_DIR = $(DIR)/$(SIM_PROG)_c/
+CONTROLLER_DIR = $(DIR)/$(CONTRACT_NODE)_controller_c/
 
 CTRLR_PROG=$(CONTRACT_NODE)_controller
 
@@ -41,7 +47,7 @@ CTRLR_OBJS = $(CTRLR_C_FILES:.c=.o)
 all: sim
 
 sim: $(SIM_NODE)_sim $(SIM_PROG).epci
-	# $(HEPTS) -mod $(SIM_MOD) -node $(SIM_NODE) -exec ./$(SIM_NODE)_sim
+#	$(HEPTS) -mod $(SIM_MOD) -node $(SIM_NODE) -exec ./$(SIM_NODE)_sim
 
 $(SIM_NODE)_sim: $(SIM_PROG)_c/_main.o $(HEPT_OBJS) $(CTRLR_OBJS)
 	$(CC) $(LDFLAGS) -o $(SIM_NODE)_sim $^
@@ -62,14 +68,23 @@ $(CTRLR_PROG).ept: $(CONTRACT_PROG)_z3z/$(CONTRACT_NODE).z3z
 $(CTRLR_PROG).epci $(CTRLR_PROG)_c/$(CTRLR_PROG).c: $(CTRLR_PROG).ept
 	$(HEPTC) -target c $(CTRLR_PROG).ept
 
+
+
+
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
+sim:
+	python $(PROG) $(SIM_PROG).ept 
+	$(CC) -c  -I $(HEPT_LIB_C) -I $(MAIN_DIR) -I $(CONTROLLER_DIR) -o $(SIM_WEB).o -g -fstack-protector $(SIM_WEB).c
+	$(CC) -o $(SIM_WEB)_sim $(SIM_WEB).o $(MAIN_DIR)/$(SIM_PROG).o $(MICRO_HTTP_LIB) $(CONTROLLER_DIR)/$(CONTRACT_NODE)_controller.o
 clean:
 	rm -fr $(HEPT_C_DIRS) $(HEPT_Z3Z_DIRS) $(HEPT_JAVA_DIRS)
 	rm -f $(SIM_NODE)_sim main.*
 	rm -f *.epci *.mls *.ml *.obc ./*~
 	rm -f $(CTRLR_PROG).ept
+	rm -f $(SIM_WEB).c $(SIM_WEB).o $(SIM_WEB)_sim mainWeb.py
+	rm -Rf ./templates
 
 # Dependences
 

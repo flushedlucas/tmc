@@ -78,20 +78,7 @@ let
 	end
 tel
 
-node priority ( a_input: bool) returns (active: bool)
-let
-	automaton
-		state Off do
-			active = false;
-		unless a_input then On
-
-		state On do
-			active = true;
-		unless not (a_input) then Off
-	end
-tel
-
-node coresystem(p1_input, p2_input, p3_input, p4_input, buffer, b_full, capper_buffer,b_capped, out_buffer : bool) returns (p1, p2, p3, p4, a_priority, a_matting , a_pneumatic, a_bomb, a_capper, a_robot: bool)
+node coresystem(p1_input, p2_input, p3_input, p4_input, buffer, b_full, capper_buffer,b_capped, out_buffer : bool) returns (p1, p2, p3, p4, a_matting, a_pneumatic, a_bomb, a_capper, a_robot: bool)
 contract
 		var 
 			rule2, rule4, rule5, rule6: bool;
@@ -117,5 +104,4 @@ let
 	a_pneumatic = inlined pneumatic(buffer, c1_pneumatic, c2_pneumatic);
 	a_capper = inlined capper(capper_buffer, c1_capper, c2_capper);
 	a_robot = inlined robot(p4, c1_robot, c2_robot);
-	a_priority = inlined priority(a_robot or a_capper or a_bomb or a_pneumatic);
 tel
