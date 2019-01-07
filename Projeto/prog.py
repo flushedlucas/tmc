@@ -54,6 +54,11 @@ def lineToAutomaton(line):
   entradas = entradas.split(":")[0]
   entradas = entradas.split(",")
   print (entradas)
+
+  def tiraEspacos(x):
+  	return (x.strip())
+
+  entradas = list(map(tiraEspacos, entradas))
   
   saidas = line[1].strip()[1:-1]
   print (saidas)
@@ -149,6 +154,7 @@ list(map(concateRes,task['saidas']))
 resposta+='strcat(json, "}");'
 
 part1 = '''
+
 #include <sys/types.h>
 #ifndef _WIN32
 #include <sys/select.h>
@@ -161,16 +167,23 @@ part1 = '''
 #include <stdio.h>
 #include <stdlib.h>
 #include "_main.h"
+
 #define PORT 8082
 #define n 57
+
 %s
 int glob_cnt=0;
+
+
 struct item
 {
     const char *key;
     const char *value;
 };
+
+
 struct item dict[n];
+
 int save_items (void *cls, enum MHD_ValueKind kind, 
                    const char *key, const char *value)
 {
@@ -210,6 +223,7 @@ part3 = '''
     printf("%s, %s",dict[i].key, dict[i].value);
   }  ''' + step + '''
   &_res, &mem);
+
   char aux[1];
   ''' + resposta +'''
   response =
@@ -217,8 +231,10 @@ part3 = '''
              MHD_RESPMEM_PERSISTENT);
   ret = MHD_queue_response (connection, MHD_HTTP_OK, response);
   MHD_destroy_response (response);
+
   return ret;
 }
+
 int main(int argc, char** argv) {
   
   struct MHD_Daemon *daemon;
@@ -229,11 +245,14 @@ int main(int argc, char** argv) {
     dict[i].key = "";
     dict[i].value = "";
   }
+
   daemon = MHD_start_daemon (MHD_USE_SELECT_INTERNALLY, PORT, NULL, NULL,
                              &answer_to_connection, NULL, MHD_OPTION_END);
   if (NULL == daemon)
     return 1;
+
   (void) getchar ();
+
   MHD_stop_daemon (daemon);
   return 0;
 } '''

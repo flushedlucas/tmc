@@ -7,6 +7,7 @@ except OSError as e:
 
 def createWebClientHtml(task):
 
+
     entradas = task['entradas']
 
     def createInputs(x):
@@ -51,7 +52,13 @@ def createWebClientHtml(task):
         
                         <input class="btn btn-success" type = "submit"/>
                     </form>
-        
+            <div>
+              <h1>Resultado</h1>
+                        {% for r in resposta %}
+                            <p>{{ r }}</p>
+                        {% endfor %}
+            
+            </div>       
         
                 </div>
             </div>
@@ -89,7 +96,7 @@ def createWebClientFlask(task):
 
     entradas = "% ("+(','.join(entradas))+")"
 
-    linesUrl = "url = 'localhost:8082/?" + linesUrl + entradas
+    linesUrl = '''url = 'http://127.0.0.1:8082/?''' + linesUrl + entradas
 
     flaskPy.write('''
 from flask import Flask, render_template, request, url_for, redirect
@@ -98,8 +105,8 @@ import requests
 app = Flask(__name__)
 @app.route('/')
 def index():
-    return render_template("main.html")
-@app.route("/resposta", methods=["POST"])\ndef resposta():\n\tif (request.method == "POST"):\n\t\t%s\n\t\t%s\n\t\tr = requests.get(url)\n\t\tresposta = json.dumps(r.text)\n\t\treturn resposta
+    return render_template("main.html",resposta = [])
+@app.route("/resposta", methods=["POST"])\ndef resposta():\n\tif (request.method == "POST"):\n\t\t%s\n\t\t%s\n\t\tr = requests.get(url)\n\t\tresposta = json.dumps(r.text)\n\t\tstringResposta = r.text[1:-1]\n\t\tlistaResposta = stringResposta.split(',')\n\t\tdef lineToHtml(line):\n\t\t\tline = line\n\t\t\treturn  line\n\t\tresposta = list(map(lineToHtml,listaResposta))\n\t\treturn render_template('main.html', resposta=resposta)
 if __name__ == '__main__':
    app.run(debug = True)
     ''' % (lines, linesUrl))
