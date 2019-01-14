@@ -1,0 +1,422 @@
+% --- Generated the 7/1/2019 at 8:11 --- %
+% --- heptagon compiler, version 1.03.00 (compiled thu. may. 3 2:35:29 CET 2018) --- %
+% --- Command line: /usr/local/bin/heptc -target c -target z3z -s coresystem project.ept --- %
+
+set_reorder(2);read("Property.lib");read("Synthesis.lib");read("Verif_Determ.lib");read("Simul.lib");read("Synthesis_Partial_order.lib");read("Orbite.lib");
+% -- dependencies --- %
+
+% ---------- process coresystem ---------- %
+
+declare(coresystem_p1_input, coresystem_p2_input, coresystem_p3_input,
+        coresystem_p4_input, coresystem_buffer, coresystem_b_full,
+        coresystem_capper_buffer, coresystem_b_capped, coresystem_out_buffer,
+        coresystem_c2_robot, coresystem_c1_robot, coresystem_c2_capper,
+        coresystem_c1_capper, coresystem_c2_pneumatic,
+        coresystem_c1_pneumatic, coresystem_c2_matting,
+        coresystem_c1_matting, coresystem_c2_bomb, coresystem_c1_bomb,
+        coresystem_ck_1, coresystem_pnr_8, coresystem_ck_8_1,
+        coresystem_pnr_7, coresystem_ck_10_1, coresystem_pnr_6,
+        coresystem_ck_12_1, coresystem_pnr_5, coresystem_ck_14_1,
+        coresystem_pnr_4, coresystem_ck_16_1, coresystem_pnr_3,
+        coresystem_ck_18_1, coresystem_pnr_2, coresystem_ck_20_1,
+        coresystem_pnr_1, coresystem_ck_22_1, coresystem_pnr,
+        coresystem_error_state);
+conditions : [coresystem_p1_input, coresystem_p2_input, coresystem_p3_input,
+              coresystem_p4_input, coresystem_buffer, coresystem_b_full,
+              coresystem_capper_buffer, coresystem_b_capped,
+              coresystem_out_buffer, coresystem_c2_robot,
+              coresystem_c1_robot, coresystem_c2_capper,
+              coresystem_c1_capper, coresystem_c2_pneumatic,
+              coresystem_c1_pneumatic, coresystem_c2_matting,
+              coresystem_c1_matting, coresystem_c2_bomb, coresystem_c1_bomb];
+states : [coresystem_ck_1, coresystem_pnr_8, coresystem_ck_8_1,
+          coresystem_pnr_7, coresystem_ck_10_1, coresystem_pnr_6,
+          coresystem_ck_12_1, coresystem_pnr_5, coresystem_ck_14_1,
+          coresystem_pnr_4, coresystem_ck_16_1, coresystem_pnr_3,
+          coresystem_ck_18_1, coresystem_pnr_2, coresystem_ck_20_1,
+          coresystem_pnr_1, coresystem_ck_22_1, coresystem_pnr,
+          coresystem_error_state];
+controllables : [coresystem_c2_robot, coresystem_c1_robot,
+                 coresystem_c2_capper, coresystem_c1_capper,
+                 coresystem_c2_pneumatic, coresystem_c1_pneumatic,
+                 coresystem_c2_matting, coresystem_c1_matting,
+                 coresystem_c2_bomb, coresystem_c1_bomb];
+evolutions : [];
+initialisations : [];
+coresystem_input : coresystem_p1_input;
+coresystem_input_1 : coresystem_p2_input;
+coresystem_input_2 : coresystem_p3_input;
+coresystem_input_3 : coresystem_p4_input;
+coresystem_c2_bomb_1 : coresystem_c2_bomb;
+coresystem_c1_bomb_1 : coresystem_c1_bomb;
+coresystem_c2_matting_1 : coresystem_c2_matting;
+coresystem_c1_matting_1 : coresystem_c1_matting;
+coresystem_c2_pneumatic_1 : coresystem_c2_pneumatic;
+coresystem_c1_pneumatic_1 : coresystem_c1_pneumatic;
+coresystem_buffer_1 : coresystem_buffer;
+coresystem_c2_capper_1 : coresystem_c2_capper;
+coresystem_c1_capper_1 : coresystem_c1_capper;
+coresystem_buffer_2 : coresystem_capper_buffer;
+coresystem_c2_robot_1 : coresystem_c2_robot;
+coresystem_c1_robot_1 : coresystem_c1_robot;
+coresystem_s_8_St_14_On_1 : ((1 when coresystem_input) default -1);
+coresystem_r_8_St_14_On : ((1 when coresystem_input)
+  default coresystem_pnr_8);
+coresystem_s_8_St_14_Off_1 : ((-1 when coresystem_input) default 1);
+coresystem_s_8_1 : ((coresystem_s_8_St_14_Off_1 when coresystem_ck_1)
+  default coresystem_s_8_St_14_On_1);
+coresystem_r_8_St_14_Off : ((1 when coresystem_input)
+  default coresystem_pnr_8);
+coresystem_r_8 : ((coresystem_r_8_St_14_Off when coresystem_ck_1)
+  default coresystem_r_8_St_14_On);
+coresystem_ck_7_1 : coresystem_s_8_1;
+coresystem_ns_8_St_14_On_1 : -1;
+coresystem_nr_8_St_14_On : -1;
+coresystem_output_St_14_On : 1;
+coresystem_ns_8_St_14_Off_1 : 1;
+coresystem_ns_8_1 : ((coresystem_ns_8_St_14_Off_1 when coresystem_ck_7_1)
+  default coresystem_ns_8_St_14_On_1);
+coresystem_nr_8_St_14_Off : -1;
+coresystem_nr_8 : ((coresystem_nr_8_St_14_Off when coresystem_ck_7_1)
+  default coresystem_nr_8_St_14_On);
+coresystem_output_St_14_Off : -1;
+coresystem_output : ((coresystem_output_St_14_Off when coresystem_ck_7_1)
+  default coresystem_output_St_14_On);
+coresystem_p1 : coresystem_output;
+coresystem_s_7_St_13_On_1 : ((1 when coresystem_input_1) default -1);
+coresystem_r_7_St_13_On : ((1 when coresystem_input_1)
+  default coresystem_pnr_7);
+coresystem_s_7_St_13_Off_1 : ((-1 when coresystem_input_1) default 1);
+coresystem_s_7_1 : ((coresystem_s_7_St_13_Off_1 when coresystem_ck_8_1)
+  default coresystem_s_7_St_13_On_1);
+coresystem_r_7_St_13_Off : ((1 when coresystem_input_1)
+  default coresystem_pnr_7);
+coresystem_r_7 : ((coresystem_r_7_St_13_Off when coresystem_ck_8_1)
+  default coresystem_r_7_St_13_On);
+coresystem_ck_9_1 : coresystem_s_7_1;
+coresystem_ns_7_St_13_On_1 : -1;
+coresystem_nr_7_St_13_On : -1;
+coresystem_output_1_St_13_On : 1;
+coresystem_ns_7_St_13_Off_1 : 1;
+coresystem_ns_7_1 : ((coresystem_ns_7_St_13_Off_1 when coresystem_ck_9_1)
+  default coresystem_ns_7_St_13_On_1);
+coresystem_nr_7_St_13_Off : -1;
+coresystem_nr_7 : ((coresystem_nr_7_St_13_Off when coresystem_ck_9_1)
+  default coresystem_nr_7_St_13_On);
+coresystem_output_1_St_13_Off : -1;
+coresystem_output_1 : ((coresystem_output_1_St_13_Off when coresystem_ck_9_1)
+  default coresystem_output_1_St_13_On);
+coresystem_p2 : coresystem_output_1;
+coresystem_p2_1 : coresystem_p2;
+coresystem_s_6_St_12_On_1 : ((1 when coresystem_input_2) default -1);
+coresystem_r_6_St_12_On : ((1 when coresystem_input_2)
+  default coresystem_pnr_6);
+coresystem_s_6_St_12_Off_1 : ((-1 when coresystem_input_2) default 1);
+coresystem_s_6_1 : ((coresystem_s_6_St_12_Off_1 when coresystem_ck_10_1)
+  default coresystem_s_6_St_12_On_1);
+coresystem_r_6_St_12_Off : ((1 when coresystem_input_2)
+  default coresystem_pnr_6);
+coresystem_r_6 : ((coresystem_r_6_St_12_Off when coresystem_ck_10_1)
+  default coresystem_r_6_St_12_On);
+coresystem_ck_11_1 : coresystem_s_6_1;
+coresystem_ns_6_St_12_On_1 : -1;
+coresystem_nr_6_St_12_On : -1;
+coresystem_output_2_St_12_On : 1;
+coresystem_ns_6_St_12_Off_1 : 1;
+coresystem_ns_6_1 : ((coresystem_ns_6_St_12_Off_1 when coresystem_ck_11_1)
+  default coresystem_ns_6_St_12_On_1);
+coresystem_nr_6_St_12_Off : -1;
+coresystem_nr_6 : ((coresystem_nr_6_St_12_Off when coresystem_ck_11_1)
+  default coresystem_nr_6_St_12_On);
+coresystem_output_2_St_12_Off : -1;
+coresystem_output_2 : ((coresystem_output_2_St_12_Off
+  when coresystem_ck_11_1) default coresystem_output_2_St_12_On);
+coresystem_p3 : coresystem_output_2;
+coresystem_s_5_St_11_On_1 : ((1 when coresystem_input_3) default -1);
+coresystem_r_5_St_11_On : ((1 when coresystem_input_3)
+  default coresystem_pnr_5);
+coresystem_s_5_St_11_Off_1 : ((-1 when coresystem_input_3) default 1);
+coresystem_s_5_1 : ((coresystem_s_5_St_11_Off_1 when coresystem_ck_12_1)
+  default coresystem_s_5_St_11_On_1);
+coresystem_r_5_St_11_Off : ((1 when coresystem_input_3)
+  default coresystem_pnr_5);
+coresystem_r_5 : ((coresystem_r_5_St_11_Off when coresystem_ck_12_1)
+  default coresystem_r_5_St_11_On);
+coresystem_ck_13_1 : coresystem_s_5_1;
+coresystem_ns_5_St_11_On_1 : -1;
+coresystem_nr_5_St_11_On : -1;
+coresystem_output_3_St_11_On : 1;
+coresystem_ns_5_St_11_Off_1 : 1;
+coresystem_ns_5_1 : ((coresystem_ns_5_St_11_Off_1 when coresystem_ck_13_1)
+  default coresystem_ns_5_St_11_On_1);
+coresystem_nr_5_St_11_Off : -1;
+coresystem_nr_5 : ((coresystem_nr_5_St_11_Off when coresystem_ck_13_1)
+  default coresystem_nr_5_St_11_On);
+coresystem_output_3_St_11_Off : -1;
+coresystem_output_3 : ((coresystem_output_3_St_11_Off
+  when coresystem_ck_13_1) default coresystem_output_3_St_11_On);
+coresystem_p4 : coresystem_output_3;
+coresystem_p4_1 : coresystem_p4;
+coresystem_s_4_St_10_Fill_1 : ((-1 when coresystem_c2_bomb_1) default 1);
+coresystem_r_4_St_10_Fill : ((1 when coresystem_c2_bomb_1)
+  default coresystem_pnr_4);
+coresystem_v_23 : (coresystem_p2_1 and coresystem_c1_bomb_1);
+coresystem_s_4_St_10_Stop_1 : ((1 when coresystem_v_23) default -1);
+coresystem_s_4_1 : ((coresystem_s_4_St_10_Fill_1 when coresystem_ck_14_1)
+  default coresystem_s_4_St_10_Stop_1);
+coresystem_r_4_St_10_Stop : ((1 when coresystem_v_23)
+  default coresystem_pnr_4);
+coresystem_r_4 : ((coresystem_r_4_St_10_Fill when coresystem_ck_14_1)
+  default coresystem_r_4_St_10_Stop);
+coresystem_ck_15_1 : coresystem_s_4_1;
+coresystem_ns_4_St_10_Fill_1 : 1;
+coresystem_nr_4_St_10_Fill : -1;
+coresystem_active_St_10_Fill : 1;
+coresystem_ns_4_St_10_Stop_1 : -1;
+coresystem_ns_4_1 : ((coresystem_ns_4_St_10_Fill_1 when coresystem_ck_15_1)
+  default coresystem_ns_4_St_10_Stop_1);
+coresystem_nr_4_St_10_Stop : -1;
+coresystem_nr_4 : ((coresystem_nr_4_St_10_Fill when coresystem_ck_15_1)
+  default coresystem_nr_4_St_10_Stop);
+coresystem_active_St_10_Stop : -1;
+coresystem_active : ((coresystem_active_St_10_Fill when coresystem_ck_15_1)
+  default coresystem_active_St_10_Stop);
+coresystem_a_bomb : coresystem_active;
+coresystem_s_3_St_9_Moving_1 : ((-1 when coresystem_c2_matting_1) default 1);
+coresystem_r_3_St_9_Moving : ((1 when coresystem_c2_matting_1)
+  default coresystem_pnr_3);
+coresystem_s_2_St_8_Foward_1 : ((1 when coresystem_c2_pneumatic_1)
+  default -1);
+coresystem_r_2_St_8_Foward : ((1 when coresystem_c2_pneumatic_1)
+  default coresystem_pnr_2);
+coresystem_v_28 : (coresystem_buffer_1 and coresystem_c1_pneumatic_1);
+coresystem_s_2_St_8_Back_1 : ((-1 when coresystem_v_28) default 1);
+coresystem_s_2_1 : ((coresystem_s_2_St_8_Back_1 when coresystem_ck_18_1)
+  default coresystem_s_2_St_8_Foward_1);
+coresystem_r_2_St_8_Back : ((1 when coresystem_v_28)
+  default coresystem_pnr_2);
+coresystem_r_2 : ((coresystem_r_2_St_8_Back when coresystem_ck_18_1)
+  default coresystem_r_2_St_8_Foward);
+coresystem_ck_19_1 : coresystem_s_2_1;
+coresystem_ns_2_St_8_Foward_1 : -1;
+coresystem_nr_2_St_8_Foward : -1;
+coresystem_active_2_St_8_Foward : 1;
+coresystem_ns_2_St_8_Back_1 : 1;
+coresystem_ns_2_1 : ((coresystem_ns_2_St_8_Back_1 when coresystem_ck_19_1)
+  default coresystem_ns_2_St_8_Foward_1);
+coresystem_nr_2_St_8_Back : -1;
+coresystem_nr_2 : ((coresystem_nr_2_St_8_Back when coresystem_ck_19_1)
+  default coresystem_nr_2_St_8_Foward);
+coresystem_active_2_St_8_Back : -1;
+coresystem_active_2 : ((coresystem_active_2_St_8_Back
+  when coresystem_ck_19_1) default coresystem_active_2_St_8_Foward);
+coresystem_a_pneumatic : coresystem_active_2;
+coresystem_s_1_St_7_Action_1 : ((-1 when coresystem_c2_capper_1) default 1);
+coresystem_r_1_St_7_Action : ((1 when coresystem_c2_capper_1)
+  default coresystem_pnr_1);
+coresystem_v_29 : (coresystem_buffer_2 and coresystem_c1_capper_1);
+coresystem_s_1_St_7_Stop_1 : ((1 when coresystem_v_29) default -1);
+coresystem_s_1_1 : ((coresystem_s_1_St_7_Action_1 when coresystem_ck_20_1)
+  default coresystem_s_1_St_7_Stop_1);
+coresystem_r_1_St_7_Stop : ((1 when coresystem_v_29)
+  default coresystem_pnr_1);
+coresystem_r_1 : ((coresystem_r_1_St_7_Action when coresystem_ck_20_1)
+  default coresystem_r_1_St_7_Stop);
+coresystem_ck_21_1 : coresystem_s_1_1;
+coresystem_ns_1_St_7_Action_1 : 1;
+coresystem_nr_1_St_7_Action : -1;
+coresystem_active_3_St_7_Action : 1;
+coresystem_ns_1_St_7_Stop_1 : -1;
+coresystem_ns_1_1 : ((coresystem_ns_1_St_7_Action_1 when coresystem_ck_21_1)
+  default coresystem_ns_1_St_7_Stop_1);
+coresystem_nr_1_St_7_Stop : -1;
+coresystem_nr_1 : ((coresystem_nr_1_St_7_Action when coresystem_ck_21_1)
+  default coresystem_nr_1_St_7_Stop);
+coresystem_active_3_St_7_Stop : -1;
+coresystem_active_3 : ((coresystem_active_3_St_7_Action
+  when coresystem_ck_21_1) default coresystem_active_3_St_7_Stop);
+coresystem_a_capper : coresystem_active_3;
+coresystem_s_St_6_Out_1 : ((-1 when coresystem_c2_robot_1) default 1);
+coresystem_r_St_6_Out : ((1 when coresystem_c2_robot_1)
+  default coresystem_pnr);
+coresystem_v_30 : (coresystem_p4_1 and coresystem_c1_robot_1);
+coresystem_s_St_6_P4_1 : ((1 when coresystem_v_30) default -1);
+coresystem_s_1_2 : ((coresystem_s_St_6_Out_1 when coresystem_ck_22_1)
+  default coresystem_s_St_6_P4_1);
+coresystem_r_St_6_P4 : ((1 when coresystem_v_30) default coresystem_pnr);
+coresystem_r : ((coresystem_r_St_6_Out when coresystem_ck_22_1)
+  default coresystem_r_St_6_P4);
+coresystem_ck_23_1 : coresystem_s_1_2;
+coresystem_ns_St_6_Out_1 : 1;
+coresystem_nr_St_6_Out : -1;
+coresystem_active_4_St_6_Out : 1;
+coresystem_ns_St_6_P4_1 : -1;
+coresystem_ns_1_2 : ((coresystem_ns_St_6_Out_1 when coresystem_ck_23_1)
+  default coresystem_ns_St_6_P4_1);
+coresystem_nr_St_6_P4 : -1;
+coresystem_nr : ((coresystem_nr_St_6_Out when coresystem_ck_23_1)
+  default coresystem_nr_St_6_P4);
+coresystem_active_4_St_6_P4 : -1;
+coresystem_active_4 : ((coresystem_active_4_St_6_Out when coresystem_ck_23_1)
+  default coresystem_active_4_St_6_P4);
+coresystem_a_robot : coresystem_active_4;
+coresystem_v_25 : (coresystem_a_robot or coresystem_a_capper);
+coresystem_v_26 : (coresystem_v_25 or coresystem_a_bomb);
+coresystem_v_27 : (coresystem_v_26 or coresystem_a_pneumatic);
+coresystem_start : (not coresystem_v_27);
+coresystem_v_24 : (coresystem_start and coresystem_c1_matting_1);
+coresystem_s_3_St_9_Stop_1 : ((1 when coresystem_v_24) default -1);
+coresystem_s_3_1 : ((coresystem_s_3_St_9_Moving_1 when coresystem_ck_16_1)
+  default coresystem_s_3_St_9_Stop_1);
+coresystem_r_3_St_9_Stop : ((1 when coresystem_v_24)
+  default coresystem_pnr_3);
+coresystem_r_3 : ((coresystem_r_3_St_9_Moving when coresystem_ck_16_1)
+  default coresystem_r_3_St_9_Stop);
+coresystem_ck_17_1 : coresystem_s_3_1;
+coresystem_ns_3_St_9_Moving_1 : 1;
+coresystem_nr_3_St_9_Moving : -1;
+coresystem_active_1_St_9_Moving : 1;
+coresystem_ns_3_St_9_Stop_1 : -1;
+coresystem_ns_3_1 : ((coresystem_ns_3_St_9_Moving_1 when coresystem_ck_17_1)
+  default coresystem_ns_3_St_9_Stop_1);
+coresystem_nr_3_St_9_Stop : -1;
+coresystem_nr_3 : ((coresystem_nr_3_St_9_Moving when coresystem_ck_17_1)
+  default coresystem_nr_3_St_9_Stop);
+coresystem_active_1_St_9_Stop : -1;
+coresystem_active_1 : ((coresystem_active_1_St_9_Moving
+  when coresystem_ck_17_1) default coresystem_active_1_St_9_Stop);
+coresystem_a_matting : coresystem_active_1;
+initialisations : concat(initialisations, [(coresystem_ck_1 = 1)]);
+evolutions : concat(evolutions, [(coresystem_ns_8_1 default coresystem_ck_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr_8 = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr_8 default coresystem_pnr_8)]);
+initialisations : concat(initialisations, [(coresystem_ck_8_1 = 1)]);
+evolutions : concat(evolutions,
+                    [(coresystem_ns_7_1 default coresystem_ck_8_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr_7 = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr_7 default coresystem_pnr_7)]);
+initialisations : concat(initialisations, [(coresystem_ck_10_1 = 1)]);
+evolutions : concat(evolutions,
+                    [(coresystem_ns_6_1 default coresystem_ck_10_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr_6 = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr_6 default coresystem_pnr_6)]);
+initialisations : concat(initialisations, [(coresystem_ck_12_1 = 1)]);
+evolutions : concat(evolutions,
+                    [(coresystem_ns_5_1 default coresystem_ck_12_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr_5 = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr_5 default coresystem_pnr_5)]);
+initialisations : concat(initialisations, [(coresystem_ck_14_1 = -1)]);
+evolutions : concat(evolutions,
+                    [(coresystem_ns_4_1 default coresystem_ck_14_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr_4 = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr_4 default coresystem_pnr_4)]);
+initialisations : concat(initialisations, [(coresystem_ck_16_1 = -1)]);
+evolutions : concat(evolutions,
+                    [(coresystem_ns_3_1 default coresystem_ck_16_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr_3 = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr_3 default coresystem_pnr_3)]);
+initialisations : concat(initialisations, [(coresystem_ck_18_1 = 1)]);
+evolutions : concat(evolutions,
+                    [(coresystem_ns_2_1 default coresystem_ck_18_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr_2 = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr_2 default coresystem_pnr_2)]);
+initialisations : concat(initialisations, [(coresystem_ck_20_1 = -1)]);
+evolutions : concat(evolutions,
+                    [(coresystem_ns_1_1 default coresystem_ck_20_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr_1 = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr_1 default coresystem_pnr_1)]);
+initialisations : concat(initialisations, [(coresystem_ck_22_1 = -1)]);
+evolutions : concat(evolutions,
+                    [(coresystem_ns_1_2 default coresystem_ck_22_1)]);
+initialisations : concat(initialisations, [(coresystem_pnr = -1)]);
+evolutions : concat(evolutions, [(coresystem_nr default coresystem_pnr)]);
+coresystem_v_19 : (coresystem_a_pneumatic and coresystem_p1);
+coresystem_rule2 : (not coresystem_v_19);
+coresystem_v_16 : (not coresystem_p4);
+coresystem_v_17 : (coresystem_a_robot and coresystem_v_16);
+coresystem_v_18 : (not coresystem_v_17);
+coresystem_v_12 : (not coresystem_p3);
+coresystem_v_13 : (coresystem_a_capper and coresystem_v_12);
+coresystem_v_14 : (not coresystem_v_13);
+coresystem_v_9 : (not coresystem_p2);
+coresystem_v_10 : (coresystem_a_bomb and coresystem_v_9);
+coresystem_v_11 : (not coresystem_v_10);
+coresystem_v_15 : (coresystem_v_11 and coresystem_v_14);
+coresystem_rule4 : (coresystem_v_15 and coresystem_v_18);
+coresystem_v_20 : (coresystem_rule2 and coresystem_rule4);
+coresystem_v_7 : (coresystem_a_capper and coresystem_b_capped);
+coresystem_v_8 : (not coresystem_v_7);
+coresystem_v_5 : (coresystem_a_bomb and coresystem_b_full);
+coresystem_v_6 : (not coresystem_v_5);
+coresystem_rule5 : (coresystem_v_6 and coresystem_v_8);
+coresystem_v_21 : (coresystem_v_20 and coresystem_rule5);
+coresystem_v : (coresystem_p1 or coresystem_p2);
+coresystem_v_1 : (coresystem_v or coresystem_p3);
+coresystem_v_2 : (coresystem_v_1 or coresystem_p4);
+coresystem_v_3 : (not coresystem_v_2);
+coresystem_v_4 : (coresystem_a_matting and coresystem_v_3);
+coresystem_rule6 : (not coresystem_v_4);
+coresystem_v_22 : (coresystem_v_21 and coresystem_rule6);
+coresystem_assume : 1;
+coresystem_guarantee : coresystem_v_22;
+initialisations : concat(initialisations, [(coresystem_error_state = 1)]);
+evolutions : concat(evolutions, [coresystem_guarantee]);
+constraints : [((coresystem_p1_input^2) = 1), ((coresystem_p2_input^2) = 1),
+               ((coresystem_p3_input^2) = 1), ((coresystem_p4_input^2) = 1),
+               ((coresystem_buffer^2) = 1), ((coresystem_b_full^2) = 1),
+               ((coresystem_capper_buffer^2) = 1), ((coresystem_b_capped^2)
+               = 1), ((coresystem_out_buffer^2) = 1),
+               ((coresystem_c2_robot^2) = 1), ((coresystem_c1_robot^2) = 1),
+               ((coresystem_c2_capper^2) = 1), ((coresystem_c1_capper^2)
+               = 1), ((coresystem_c2_pneumatic^2) = 1),
+               ((coresystem_c1_pneumatic^2) = 1), ((coresystem_c2_matting^2)
+               = 1), ((coresystem_c1_matting^2) = 1), ((coresystem_c2_bomb^2)
+               = 1), ((coresystem_c1_bomb^2) = 1), (coresystem_assume = 1)];
+
+% --- outputs : [coresystem_p1, coresystem_p2, coresystem_p3, coresystem_p4,
+                 coresystem_a_matting, coresystem_a_pneumatic,
+                 coresystem_a_bomb, coresystem_a_capper, coresystem_a_robot] --- %
+coresystem : processus(conditions, states, evolutions, initialisations,
+                       [gen(constraints)], controllables);
+coresystem_init : initial(coresystem);
+coresystem : S_Security(coresystem,B_True(coresystem,coresystem_error_state));
+dcs_result : equal(coresystem_init,initial(coresystem));
+if dcs_result then
+    print("coresystem: synthesis succeeded.")
+else
+    print("coresystem: synthesis failed.");
+
+if dcs_result then
+    print("Triangulation and controller generation...")
+else
+    quit(1);
+declare(p_coresystem_c2_robot, p_coresystem_c1_robot, p_coresystem_c2_capper,
+        p_coresystem_c1_capper, p_coresystem_c2_pneumatic,
+        p_coresystem_c1_pneumatic, p_coresystem_c2_matting,
+        p_coresystem_c1_matting, p_coresystem_c2_bomb, p_coresystem_c1_bomb);
+phantom_vars : [p_coresystem_c2_robot, p_coresystem_c1_robot,
+                p_coresystem_c2_capper, p_coresystem_c1_capper,
+                p_coresystem_c2_pneumatic, p_coresystem_c1_pneumatic,
+                p_coresystem_c2_matting, p_coresystem_c1_matting,
+                p_coresystem_c2_bomb, p_coresystem_c1_bomb];
+coresystem_triang : Triang(constraint(coresystem),controllables,phantom_vars);
+controller_inputs : [coresystem_p1_input, coresystem_p2_input,
+                     coresystem_p3_input, coresystem_p4_input,
+                     coresystem_buffer, coresystem_b_full,
+                     coresystem_capper_buffer, coresystem_b_capped,
+                     coresystem_out_buffer, coresystem_ck_1,
+                     coresystem_pnr_8, coresystem_ck_8_1, coresystem_pnr_7,
+                     coresystem_ck_10_1, coresystem_pnr_6,
+                     coresystem_ck_12_1, coresystem_pnr_5,
+                     coresystem_ck_14_1, coresystem_pnr_4,
+                     coresystem_ck_16_1, coresystem_pnr_3,
+                     coresystem_ck_18_1, coresystem_pnr_2,
+                     coresystem_ck_20_1, coresystem_pnr_1,
+                     coresystem_ck_22_1, coresystem_pnr,
+                     p_coresystem_c2_robot, p_coresystem_c1_robot,
+                     p_coresystem_c2_capper, p_coresystem_c1_capper,
+                     p_coresystem_c2_pneumatic, p_coresystem_c1_pneumatic,
+                     p_coresystem_c2_matting, p_coresystem_c1_matting,
+                     p_coresystem_c2_bomb, p_coresystem_c1_bomb];
+heptagon_controller("coresystem_controller.ept","coresystem",controller_inputs,controllables,coresystem_triang);
+

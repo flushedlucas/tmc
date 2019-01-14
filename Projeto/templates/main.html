@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <title>coresystem</title>
+        </head>
+        
+        <body>
+            <div class="container">
+                <h1>coresystem</h1>
+               
+        
+        
+            <div class="row">
+                <div class="col-xs-5">
+                    <form action = "/resposta" method = "POST"
+                          enctype = "multipart/form-data">
+                        <div class="form-group">
+                            <label for="exampleInputFile">Insira as entradas dos automatos</label>
+            <div class="checkbox">
+                <label><input type="checkbox" name = "p1_input">p1_input</label>
+            </div>
+
+            <div class="checkbox">
+                <label><input type="checkbox" name = "p2_input">p2_input</label>
+            </div>
+
+            <div class="checkbox">
+                <label><input type="checkbox" name = "p3_input">p3_input</label>
+            </div>
+
+            <div class="checkbox">
+                <label><input type="checkbox" name = "p4_input">p4_input</label>
+            </div>
+
+            <div class="checkbox">
+                <label><input type="checkbox" name = "buffer">buffer</label>
+            </div>
+
+            <div class="checkbox">
+                <label><input type="checkbox" name = "b_full">b_full</label>
+            </div>
+
+            <div class="checkbox">
+                <label><input type="checkbox" name = "capper_buffer">capper_buffer</label>
+            </div>
+
+            <div class="checkbox">
+                <label><input type="checkbox" name = "b_capped">b_capped</label>
+            </div>
+
+            <div class="checkbox">
+                <label><input type="checkbox" name = "out_buffer">out_buffer</label>
+            </div> <small id="fileHelp" class="form-text text-muted">Os inputs devem conter somente 0 e 1.</small>
+                        </div>
+        
+                        <input class="btn btn-success" type = "submit"/>
+                    </form>
+            <div>
+              <h1>Resultado</h1>
+                        {% for r in resposta %}
+                            <p>{{ r }}</p>
+                        {% endfor %}
+            
+            </div>       
+        
+                </div>
+            </div>
+            </div>
+        </body>
+        </html>
